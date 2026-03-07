@@ -31,6 +31,9 @@ Issues = "https://github.com/Threepwood-7/threep-commons/issues"
 [tool.hatch.env]
 installer = "uv"
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/threep_commons"]
 
