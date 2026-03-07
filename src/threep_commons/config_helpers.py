@@ -93,12 +93,15 @@ def coerce_value(value: Any, expected_type: type[Any], default: Any) -> Any:
 def value_at_path(source: Mapping[str, Any], path: Sequence[str], default: Any) -> Any:
     """Read one nested mapping path and fall back when any node is missing."""
 
-    current: object = source
-    for key in path:
-        if not isinstance(current, Mapping):
+    current_mapping: Mapping[str, Any] = source
+    for index, key in enumerate(path):
+        current_value: Any = current_mapping.get(key, default)
+        if index == len(path) - 1:
+            return current_value
+        if not isinstance(current_value, Mapping):
             return default
-        current = current.get(key, default)
-    return current
+        current_mapping = dict(cast("Mapping[str, Any]", current_value))
+    return default
 
 
 def apply_env_overrides(target: dict[str, Any], env_to_keys: EnvKeyMapping) -> None:
