@@ -5,7 +5,6 @@ from .storage import (
     is_local_windows_path,
     list_windows_storage_roots,
     list_windows_storage_usage,
-    normalized_path_key,
     resolve_physical_disk_numbers,
     resolve_physical_disk_tokens,
     resolve_volume_identity,
@@ -28,9 +27,7 @@ __all__ = [
     "list_volume_mount_points",
     "list_windows_storage_roots",
     "list_windows_storage_usage",
-    "normalized_path_key",
     "resolve_physical_disk_numbers",
     "resolve_physical_disk_tokens",
     "resolve_volume_identity",
 ]
-

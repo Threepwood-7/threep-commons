@@ -9,6 +9,7 @@ from threep_commons.files import (
     append_instance_id_to_filename,
     append_suffix_before_extension,
     build_instance_app_name,
+    open_path_in_default_app,
     resolve_cache_file_path,
 )
 
@@ -37,3 +38,13 @@ def test_resolve_cache_file_path(tmp_path: Path) -> None:
     )
 
     assert cache_path == (tmp_path / "data" / "demo_app" / "cache_abc_1.json").resolve()
+
+
+def test_open_path_in_default_app_uses_platform_launcher(monkeypatch) -> None:
+    opened: list[object] = []
+
+    monkeypatch.setattr("threep_commons.files.sys.platform", "win32")
+    monkeypatch.setattr("threep_commons.files.os.startfile", lambda path: opened.append(path), raising=False)
+
+    assert open_path_in_default_app("C:\\demo.txt") is True
+    assert opened == ["C:\\demo.txt"]

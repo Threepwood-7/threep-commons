@@ -5,6 +5,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from threep_commons.fs_paths import path_key
 from threep_commons.platform.windows import storage, volumes
 
 
@@ -87,7 +88,7 @@ def test_list_windows_storage_usage_returns_raw_values(monkeypatch) -> None:
     monkeypatch.setattr(
         storage,
         "resolve_volume_identity",
-        lambda path: f"volume:{storage.normalized_path_key(path)}",
+        lambda path: f"volume:{path_key(path)}",
     )
     monkeypatch.setattr(
         storage,
@@ -111,7 +112,7 @@ def test_list_windows_storage_usage_returns_raw_values(monkeypatch) -> None:
 
     assert entries[0] == storage.WindowsStorageUsage(
         root_path=Path("C:\\"),
-        volume_identity="volume:c:/",
+        volume_identity="volume:c:\\",
         volume_label="System",
         disk_tokens={"disk:0"},
         bytes_used=600,
@@ -119,7 +120,7 @@ def test_list_windows_storage_usage_returns_raw_values(monkeypatch) -> None:
     )
     assert entries[1] == storage.WindowsStorageUsage(
         root_path=Path("C:\\mount\\media01"),
-        volume_identity="volume:c:/mount/media01",
+        volume_identity=r"volume:c:\mount\media01",
         volume_label="Media",
         disk_tokens={"disk:1", "disk:2"},
         bytes_used=1500,

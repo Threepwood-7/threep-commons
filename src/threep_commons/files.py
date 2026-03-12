@@ -94,19 +94,20 @@ def resolve_cache_file_path(
     )
 
 
-def open_file_in_default_app(path: str) -> bool:
-    """Open one local file path in the platform default application."""
+def open_path_in_default_app(path: str | Path) -> bool:
+    """Open one local file or directory path in the platform default application."""
 
-    if not path:
+    text = str(path or "").strip()
+    if not text:
         return False
 
     try:
         if sys.platform == "win32":
-            os.startfile(path)
+            os.startfile(text)
         elif sys.platform == "darwin":
-            subprocess.Popen(["open", path])
+            subprocess.Popen(["open", text])
         else:
-            subprocess.Popen(["xdg-open", path])
+            subprocess.Popen(["xdg-open", text])
         return True
     except (AttributeError, OSError, subprocess.SubprocessError):
         return False

@@ -8,6 +8,7 @@ from contextlib import suppress
 from dataclasses import dataclass
 from pathlib import Path
 
+from ...fs_paths import path_key
 from .volumes import (
     get_volume_guid_path,
     get_volume_mount_point,
@@ -104,10 +105,6 @@ class WindowsStorageUsage:
 
 def is_local_windows_path(path: str) -> bool:
     return not str(path).startswith("\\\\")
-
-
-def normalized_path_key(path: str | Path) -> str:
-    return str(Path(path)).replace("\\", "/").casefold()
 
 
 def resolve_volume_identity(path: str | Path) -> str:
@@ -277,7 +274,7 @@ def list_windows_storage_roots() -> list[Path]:
                 root = Path(f"{drive}\\")
         if not os.path.isdir(root):
             continue
-        key = normalized_path_key(root)
+        key = path_key(root)
         if key in seen:
             continue
         seen.add(key)
@@ -327,7 +324,6 @@ __all__ = [
     "is_local_windows_path",
     "list_windows_storage_roots",
     "list_windows_storage_usage",
-    "normalized_path_key",
     "resolve_physical_disk_numbers",
     "resolve_physical_disk_tokens",
     "resolve_volume_identity",
