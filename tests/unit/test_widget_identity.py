@@ -14,10 +14,10 @@ class _FakeWidget:
         self.object_name = ""
         self.properties: dict[str, str] = {}
 
-    def setObjectName(self, value: str) -> None:  # noqa: N802
+    def setObjectName(self, value: str) -> None:
         self.object_name = value
 
-    def setProperty(self, key: str, value: str) -> None:  # noqa: N802
+    def setProperty(self, key: str, value: str) -> None:
         self.properties[key] = value
 
 

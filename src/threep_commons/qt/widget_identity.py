@@ -9,9 +9,9 @@ _OBJECT_NAME_RE = re.compile(r"[^A-Za-z0-9_]+")
 
 
 class _QtIdentityWidget(Protocol):
-    def setObjectName(self, name: str, /) -> None: ...  # noqa: N802
+    def setObjectName(self, name: str, /) -> None: ...
 
-    def setProperty(self, name: str, value: object, /) -> None: ...  # noqa: N802
+    def setProperty(self, name: str, value: object, /) -> None: ...
 
 
 def normalize_widget_id(widget_id: str) -> str:
