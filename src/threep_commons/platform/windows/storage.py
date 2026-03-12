@@ -140,7 +140,8 @@ def _parse_disk_numbers_from_volume_extents_payload(
 def _query_volume_disk_extents(volume_guid_path: str) -> bytes:
     if os.name != "nt":
         raise OSError(
-            f"Windows disk extent API is unavailable on this platform: {volume_guid_path}"
+            "Windows disk extent API is unavailable on this platform: "
+            f"{volume_guid_path}"
         )
 
     handle = _CREATE_FILE(

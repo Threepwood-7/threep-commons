@@ -56,7 +56,7 @@ def setup_logging(
     level: int = logging.INFO,
     console: bool = True,
 ) -> Path:
-    """Configure root logging with one rotating file handler and optional console output."""
+    """Configure root logging with file output and optional console output."""
 
     log_dir.mkdir(parents=True, exist_ok=True)
     log_path = log_dir / log_filename

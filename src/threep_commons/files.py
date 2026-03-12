@@ -60,7 +60,10 @@ def resolve_runtime_file_path(
     instance_id: str = "",
     data_dir_override: str | Path | None = None,
 ) -> Path:
-    """Resolve a runtime file path under app data unless an absolute path is supplied."""
+    """Resolve a runtime file path under app data.
+
+    Absolute paths are returned unchanged.
+    """
 
     raw_path = Path(str(file_name)).expanduser()
     if instance_id:
