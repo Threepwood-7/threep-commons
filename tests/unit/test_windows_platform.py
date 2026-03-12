@@ -31,7 +31,9 @@ def test_query_volume_path_names_grows_buffer_on_more_data(monkeypatch) -> None:
         return True
 
     monkeypatch.setattr(volumes, "_GET_VOLUME_PATH_NAMES_FOR_VOLUME_NAME", _fake_query)
-    monkeypatch.setattr(volumes.ctypes, "get_last_error", lambda: volumes._ERROR_MORE_DATA)
+    monkeypatch.setattr(
+        volumes.ctypes, "get_last_error", lambda: volumes._ERROR_MORE_DATA
+    )
 
     raw = volumes._query_volume_path_names("\\\\?\\Volume{abc}\\")
 
@@ -63,7 +65,9 @@ def test_parse_disk_numbers_from_payload_uses_aligned_offset() -> None:
 
 def test_list_windows_storage_roots_dedups_and_normalizes(monkeypatch) -> None:
     monkeypatch.setattr(storage.os, "name", "nt", raising=False)
-    monkeypatch.setattr(storage, "list_logical_drive_roots", lambda: [Path("C:\\"), Path("D:\\")])
+    monkeypatch.setattr(
+        storage, "list_logical_drive_roots", lambda: [Path("C:\\"), Path("D:\\")]
+    )
     monkeypatch.setattr(
         storage,
         "list_mounted_volume_paths",
@@ -72,7 +76,11 @@ def test_list_windows_storage_roots_dedups_and_normalizes(monkeypatch) -> None:
     monkeypatch.setattr(
         storage,
         "get_volume_mount_point",
-        lambda path: Path(str(path).rstrip("\\")) if "mount" in str(path).lower() else Path(str(path)),
+        lambda path: (
+            Path(str(path).rstrip("\\"))
+            if "mount" in str(path).lower()
+            else Path(str(path))
+        ),
     )
     monkeypatch.setattr(storage.os.path, "isdir", lambda _path: True)
 
@@ -103,9 +111,11 @@ def test_list_windows_storage_usage_returns_raw_values(monkeypatch) -> None:
     monkeypatch.setattr(
         storage.shutil,
         "disk_usage",
-        lambda path: SimpleNamespace(total=1000, free=400)
-        if str(path) == str(roots[0])
-        else SimpleNamespace(total=2000, free=500),
+        lambda path: (
+            SimpleNamespace(total=1000, free=400)
+            if str(path) == str(roots[0])
+            else SimpleNamespace(total=2000, free=500)
+        ),
     )
 
     entries = storage.list_windows_storage_usage()
@@ -128,7 +138,9 @@ def test_list_windows_storage_usage_returns_raw_values(monkeypatch) -> None:
     )
 
 
-def test_list_windows_storage_usage_falls_back_to_volume_identity_and_empty_label(monkeypatch) -> None:
+def test_list_windows_storage_usage_falls_back_to_volume_identity_and_empty_label(
+    monkeypatch,
+) -> None:
     root = Path("E:\\")
     monkeypatch.setattr(storage.os, "name", "nt", raising=False)
     monkeypatch.setattr(storage, "list_windows_storage_roots", lambda: [root])

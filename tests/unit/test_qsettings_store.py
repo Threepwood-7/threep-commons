@@ -9,6 +9,7 @@ from threep_commons.qsettings_store import (
     create_qsettings,
     qsettings_store_file_path,
 )
+
 if TYPE_CHECKING:
     from pathlib import Path
 

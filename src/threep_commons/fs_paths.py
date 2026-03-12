@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import os
 import re
-from collections.abc import Iterable
 from pathlib import Path, PureWindowsPath
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 WINDOWS_DRIVE_PATH_RE = re.compile(r"^[A-Za-z]:[\\/]")
 WINDOWS_UNC_PATH_RE = re.compile(r"^[\\/]{2}[^\\/]+[\\/][^\\/]+")

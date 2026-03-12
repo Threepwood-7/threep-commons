@@ -20,7 +20,11 @@ if os.name == "nt":
     _GET_LOGICAL_DRIVES.restype = wintypes.DWORD
 
     _GET_VOLUME_NAME_FOR_MOUNT = _KERNEL32.GetVolumeNameForVolumeMountPointW
-    _GET_VOLUME_NAME_FOR_MOUNT.argtypes = [wintypes.LPCWSTR, wintypes.LPWSTR, wintypes.DWORD]
+    _GET_VOLUME_NAME_FOR_MOUNT.argtypes = [
+        wintypes.LPCWSTR,
+        wintypes.LPWSTR,
+        wintypes.DWORD,
+    ]
     _GET_VOLUME_NAME_FOR_MOUNT.restype = wintypes.BOOL
 
     _GET_VOLUME_PATH_NAMES_FOR_VOLUME_NAME = _KERNEL32.GetVolumePathNamesForVolumeNameW
@@ -65,7 +69,9 @@ def _ensure_trailing_backslash(value: str) -> str:
 
 
 def _parse_volume_path_multi_string(raw: str) -> list[Path]:
-    return [Path(_ensure_trailing_backslash(item)) for item in raw.split("\x00") if item]
+    return [
+        Path(_ensure_trailing_backslash(item)) for item in raw.split("\x00") if item
+    ]
 
 
 def get_volume_mount_point(path: str | Path) -> Path:
@@ -166,4 +172,3 @@ __all__ = [
     "list_mounted_volume_paths",
     "list_volume_mount_points",
 ]
-

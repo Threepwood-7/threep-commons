@@ -117,7 +117,9 @@ def delete_profile_config(
         identity,
         config_dir_override=config_dir_override,
     )
-    store.remove(_profile_base_key(profile_root, normalized_profile, default_profile_id))
+    store.remove(
+        _profile_base_key(profile_root, normalized_profile, default_profile_id)
+    )
     store.sync()
 
 

@@ -42,7 +42,9 @@ def test_reveal_path_in_file_manager_selects_files_on_windows(
     assert launched == [["explorer", f"/select,{target}"]]
 
 
-def test_open_parent_directory_opens_containing_directory(monkeypatch, tmp_path: Path) -> None:
+def test_open_parent_directory_opens_containing_directory(
+    monkeypatch, tmp_path: Path
+) -> None:
     opened: list[Path] = []
     target = tmp_path / "folder" / "demo.txt"
     target.parent.mkdir(parents=True)

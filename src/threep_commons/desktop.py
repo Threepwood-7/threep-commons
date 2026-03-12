@@ -65,7 +65,9 @@ def reveal_path_in_file_manager(path: str | Path) -> bool:
             if target.exists() and target.is_file():
                 subprocess.Popen(["open", "-R", str(target)])
             else:
-                subprocess.Popen(["open", str(target if target.is_dir() else target.parent)])
+                subprocess.Popen(
+                    ["open", str(target if target.is_dir() else target.parent)]
+                )
             return True
         parent = target if target.is_dir() else target.parent
         subprocess.Popen(["xdg-open", str(parent)])

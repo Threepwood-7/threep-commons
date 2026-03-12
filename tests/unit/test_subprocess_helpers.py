@@ -8,7 +8,9 @@ from threep_commons.subprocess_helpers import (
 )
 
 
-def test_windows_no_window_run_kwargs_include_creationflags_on_windows(monkeypatch) -> None:
+def test_windows_no_window_run_kwargs_include_creationflags_on_windows(
+    monkeypatch,
+) -> None:
     monkeypatch.setattr("threep_commons.subprocess_helpers.sys.platform", "win32")
     monkeypatch.setattr(
         "threep_commons.subprocess_helpers.subprocess.CREATE_NO_WINDOW",
@@ -22,5 +24,7 @@ def test_windows_no_window_run_kwargs_include_creationflags_on_windows(monkeypat
 
 
 def test_merge_subprocess_kwargs_prefers_later_values() -> None:
-    merged = merge_subprocess_kwargs({"creationflags": 1}, {"check": False}, {"creationflags": 2})
+    merged = merge_subprocess_kwargs(
+        {"creationflags": 1}, {"check": False}, {"creationflags": 2}
+    )
     assert merged == {"creationflags": 2, "check": False}

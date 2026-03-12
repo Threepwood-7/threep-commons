@@ -24,7 +24,9 @@ def object_name_for_id(widget_id: str) -> str:
     return normalized
 
 
-def assign_widget_identity(widget: object, *, widget_id: str, widget_alias: str) -> None:
+def assign_widget_identity(
+    widget: object, *, widget_id: str, widget_alias: str
+) -> None:
     """Assign stable identity properties to one Qt widget."""
 
     widget_id_text = normalize_widget_id(widget_id)

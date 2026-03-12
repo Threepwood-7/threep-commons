@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import os
 import shutil
-from collections.abc import Sequence
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from .fs_paths import is_explicit_path_text, normalize_windows_path_text, path_key
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 def resolve_executable_path(raw: str) -> Path | None:

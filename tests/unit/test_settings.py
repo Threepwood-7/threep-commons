@@ -5,14 +5,14 @@ from __future__ import annotations
 import json
 
 from threep_commons import AppIdentity
+from threep_commons.qsettings_store import create_qsettings
 from threep_commons.settings import (
+    QSettingsValueStore,
     SettingsDomainBase,
     SettingsManagerBase,
-    QSettingsValueStore,
     delegate_domain_property,
     ensure_schema_defaults,
 )
-from threep_commons.qsettings_store import create_qsettings
 
 
 class _FlagDomain(SettingsDomainBase):
