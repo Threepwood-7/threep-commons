@@ -7,6 +7,6 @@ github_username: Threepwood-7
 package_name: threep_commons
 project_kind: shared_lib
 project_name: threep-commons
-project_version: 0.1.0
+project_version: 0.3.0
 runtime_dependencies:
   - PySide6>=6.10.2
