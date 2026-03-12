@@ -6,11 +6,9 @@ from typing import TYPE_CHECKING
 
 from PySide6.QtCore import QSettings
 
-from .config_helpers import SchemaEntry, coerce_value
 from .paths import configure_qsettings
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
     from pathlib import Path
 
     from .app_identity import AppIdentity
@@ -48,17 +46,3 @@ def qsettings_store_file_path(
     )
     settings.sync()
     return str(settings.fileName() or "").strip()
-
-
-def ensure_schema_defaults(settings: QSettings, schema: Sequence[SchemaEntry]) -> bool:
-    """Seed missing schema keys into one QSettings store."""
-
-    changed = False
-    for key, expected_type, default in schema:
-        if settings.contains(key):
-            continue
-        settings.setValue(key, coerce_value(default, expected_type, default))
-        changed = True
-    if changed:
-        settings.sync()
-    return changed

@@ -11,7 +11,8 @@ from .config_helpers import (
     apply_env_overrides,
     coerce_value,
 )
-from .qsettings_store import create_qsettings, qsettings_store_file_path
+from .qsettings_store import qsettings_store_file_path
+from .settings import QSettingsValueStore
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, Sequence
@@ -45,13 +46,14 @@ def list_profile_ids(
 ) -> list[str]:
     """List normalized profile identifiers stored in QSettings."""
 
-    settings = create_qsettings(identity, config_dir_override=config_dir_override)
-    settings.beginGroup(profile_root)
+    store = QSettingsValueStore.from_identity(
+        identity,
+        config_dir_override=config_dir_override,
+    )
     profiles = [
         normalize_profile_id(group, default_profile_id)
-        for group in settings.childGroups()
+        for group in store.child_groups(profile_root)
     ]
-    settings.endGroup()
     deduped = sorted({profile for profile in profiles if profile})
     if default_profile_id not in deduped:
         deduped.insert(0, default_profile_id)
@@ -85,14 +87,18 @@ def save_profile_config(
     merged = dict(defaults)
     merged.update(dict(config))
 
-    settings = create_qsettings(identity, config_dir_override=config_dir_override)
     base_key = _profile_base_key(profile_root, normalized_profile, default_profile_id)
+    store = QSettingsValueStore.from_identity(
+        identity,
+        config_dir_override=config_dir_override,
+        namespace=base_key,
+    )
     for key, expected_type, default in schema:
-        settings.setValue(
-            f"{base_key}/{key}",
+        store.set_value(
+            key,
             coerce_value(merged.get(key, default), expected_type, default),
         )
-    settings.sync()
+    store.sync()
     return normalized_profile
 
 
@@ -107,11 +113,12 @@ def delete_profile_config(
     """Delete one named profile from QSettings."""
 
     normalized_profile = normalize_profile_id(profile_id, default_profile_id)
-    settings = create_qsettings(identity, config_dir_override=config_dir_override)
-    settings.remove(
-        _profile_base_key(profile_root, normalized_profile, default_profile_id)
+    store = QSettingsValueStore.from_identity(
+        identity,
+        config_dir_override=config_dir_override,
     )
-    settings.sync()
+    store.remove(_profile_base_key(profile_root, normalized_profile, default_profile_id))
+    store.sync()
 
 
 def load_profile_config_with_issues(
@@ -130,11 +137,19 @@ def load_profile_config_with_issues(
 
     issues: list[str] = []
     normalized_profile = normalize_profile_id(profile_id, default_profile_id)
-    settings = create_qsettings(identity, config_dir_override=config_dir_override)
     base_key = _profile_base_key(profile_root, normalized_profile, default_profile_id)
+    root_store = QSettingsValueStore.from_identity(
+        identity,
+        config_dir_override=config_dir_override,
+    )
+    profile_store = QSettingsValueStore.from_identity(
+        identity,
+        config_dir_override=config_dir_override,
+        namespace=base_key,
+    )
 
     profile_exists = any(
-        settings.contains(f"{base_key}/{key}") for key, _type, _default in schema
+        root_store.contains(f"{base_key}/{key}") for key, _type, _default in schema
     )
     if not profile_exists:
         issues.append(
@@ -153,7 +168,7 @@ def load_profile_config_with_issues(
 
     loaded: dict[str, Any] = dict(defaults)
     for key, expected_type, default in schema:
-        raw = settings.value(f"{base_key}/{key}", default)
+        raw = profile_store.value(key, default)
         loaded[key] = coerce_value(raw, expected_type, default)
     loaded[normalized_profile_key] = normalized_profile
     apply_env_overrides(loaded, secret_env_to_keys)

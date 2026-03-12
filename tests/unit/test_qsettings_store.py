@@ -7,9 +7,9 @@ from typing import TYPE_CHECKING
 from threep_commons import AppIdentity
 from threep_commons.qsettings_store import (
     create_qsettings,
-    ensure_schema_defaults,
     qsettings_store_file_path,
 )
+from threep_commons.settings import ensure_schema_defaults
 
 if TYPE_CHECKING:
     from pathlib import Path

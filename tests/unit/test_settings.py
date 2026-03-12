@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
+import json
+
 from threep_commons import AppIdentity
 from threep_commons.settings import (
+    QSettingsValueStore,
     QSettingsJsonStorage,
     SettingsDomainBase,
     SettingsManagerBase,
     delegate_domain_property,
+    ensure_schema_defaults,
 )
+from threep_commons.qsettings_store import create_qsettings
 
 
 class _FlagDomain(SettingsDomainBase):
@@ -46,3 +51,48 @@ def test_settings_manager_base_delegates_domain_properties(tmp_path) -> None:
     manager.enabled = True
 
     assert manager.enabled is True
+
+
+def test_qsettings_value_store_typed_helpers_and_namespace(tmp_path) -> None:
+    identity = AppIdentity("ThreepSoftwz", "demo_settings", "Demo Settings")
+    store = QSettingsValueStore.from_identity(
+        identity,
+        config_dir_override=tmp_path / "cfg",
+        namespace="prefs",
+    )
+
+    store.set_value("enabled", "true")
+    store.set_value("tags", ["a", "b"])
+    store.set_value("numbers", ["1", "bad", 3])
+    store.set_json("payload", {"ok": True})
+    store.sync()
+
+    assert store.get_bool("enabled") is True
+    assert store.get_str_list("tags") == ["a", "b"]
+    assert store.get_int_list("numbers") == [1, 3]
+    assert store.get_json("payload", {}) == {"ok": True}
+    assert store.file_name().endswith("demo_settings.ini")
+
+    raw_settings = create_qsettings(identity, config_dir_override=tmp_path / "cfg")
+    assert raw_settings.value("prefs/payload") == json.dumps({"ok": True})
+
+
+def test_ensure_schema_defaults_accepts_value_store(tmp_path) -> None:
+    identity = AppIdentity("ThreepSoftwz", "demo_settings", "Demo Settings")
+    store = QSettingsValueStore.from_identity(
+        identity,
+        config_dir_override=tmp_path / "cfg",
+        namespace="demo",
+    )
+
+    changed = ensure_schema_defaults(
+        store,
+        [
+            ("enabled", bool, True),
+            ("count", int, 3),
+        ],
+    )
+
+    assert changed is True
+    assert store.get_bool("enabled") is True
+    assert store.value("count") == 3
