@@ -156,7 +156,7 @@ def ensure_schema_defaults(
     settings: QSettingsValueStore | QSettings,
     schema: tuple[SchemaEntry, ...] | list[SchemaEntry],
 ) -> bool:
-    """Seed missing schema keys into one QSettings-backed store."""
+    """Seed missing schema keys into one shared settings store."""
 
     store = (
         settings

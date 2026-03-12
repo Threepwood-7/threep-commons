@@ -1,4 +1,4 @@
-"""Schema-driven QSettings-backed profile persistence helpers."""
+"""Schema-driven profile persistence helpers backed by the shared settings store."""
 
 from __future__ import annotations
 
@@ -44,7 +44,7 @@ def list_profile_ids(
     default_profile_id: str = "default",
     config_dir_override: str | Path | None = None,
 ) -> list[str]:
-    """List normalized profile identifiers stored in QSettings."""
+    """List normalized profile identifiers stored in the settings store."""
 
     store = QSettingsValueStore.from_identity(
         identity,
@@ -110,7 +110,7 @@ def delete_profile_config(
     default_profile_id: str = "default",
     config_dir_override: str | Path | None = None,
 ) -> None:
-    """Delete one named profile from QSettings."""
+    """Delete one named profile from the settings store."""
 
     normalized_profile = normalize_profile_id(profile_id, default_profile_id)
     store = QSettingsValueStore.from_identity(
