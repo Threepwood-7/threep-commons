@@ -9,8 +9,6 @@ from threep_commons.qsettings_store import (
     create_qsettings,
     qsettings_store_file_path,
 )
-from threep_commons.settings import ensure_schema_defaults
-
 if TYPE_CHECKING:
     from pathlib import Path
 
@@ -28,20 +26,3 @@ def test_create_qsettings_and_store_file_path(tmp_path: Path) -> None:
 
     assert store_path
     assert store_path.endswith("demo_app.ini")
-
-
-def test_ensure_schema_defaults(tmp_path: Path) -> None:
-    identity = AppIdentity("ThreepSoftwz", "demo_app", "Demo App")
-    settings = create_qsettings(identity, config_dir_override=tmp_path / "cfg")
-
-    changed = ensure_schema_defaults(
-        settings,
-        (
-            ("demo/enabled", bool, True),
-            ("demo/count", int, 3),
-        ),
-    )
-
-    assert changed is True
-    assert settings.value("demo/enabled") is True
-    assert settings.value("demo/count") == 3

@@ -1,4 +1,4 @@
-"""Shared QSettings storage and manager primitives."""
+"""Shared QSettings value-store and manager primitives."""
 
 from __future__ import annotations
 
@@ -172,25 +172,6 @@ def ensure_schema_defaults(
     if changed:
         store.sync()
     return changed
-
-
-class QSettingsJsonStorage(QSettingsValueStore):
-    """Thin QSettings wrapper with JSON helpers and deterministic path access."""
-
-    def __init__(
-        self,
-        identity: AppIdentity,
-        *,
-        app_name: str | None = None,
-        config_dir_override: str | Path | None = None,
-    ) -> None:
-        super().__init__(
-            create_qsettings(
-                identity,
-                app_name=app_name,
-                config_dir_override=config_dir_override,
-            )
-        )
 
 
 class SettingsDomainBase:

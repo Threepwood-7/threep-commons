@@ -6,10 +6,9 @@ import json
 
 from threep_commons import AppIdentity
 from threep_commons.settings import (
-    QSettingsValueStore,
-    QSettingsJsonStorage,
     SettingsDomainBase,
     SettingsManagerBase,
+    QSettingsValueStore,
     delegate_domain_property,
     ensure_schema_defaults,
 )
@@ -29,14 +28,17 @@ class _FlagDomain(SettingsDomainBase):
 class _FlagManager(SettingsManagerBase):
     enabled = delegate_domain_property("flags", "enabled")
 
-    def __init__(self, storage: QSettingsJsonStorage) -> None:
+    def __init__(self, storage: QSettingsValueStore) -> None:
         super().__init__(storage)
         self.flags = _FlagDomain(self._storage)
 
 
-def test_qsettings_json_storage_roundtrips_json(tmp_path) -> None:
+def test_qsettings_value_store_roundtrips_json(tmp_path) -> None:
     identity = AppIdentity("ThreepSoftwz", "demo_settings", "Demo Settings")
-    storage = QSettingsJsonStorage(identity, config_dir_override=tmp_path / "cfg")
+    storage = QSettingsValueStore.from_identity(
+        identity,
+        config_dir_override=tmp_path / "cfg",
+    )
 
     storage.set_json("demo/payload", {"ok": True})
 
@@ -45,7 +47,10 @@ def test_qsettings_json_storage_roundtrips_json(tmp_path) -> None:
 
 def test_settings_manager_base_delegates_domain_properties(tmp_path) -> None:
     identity = AppIdentity("ThreepSoftwz", "demo_settings", "Demo Settings")
-    storage = QSettingsJsonStorage(identity, config_dir_override=tmp_path / "cfg")
+    storage = QSettingsValueStore.from_identity(
+        identity,
+        config_dir_override=tmp_path / "cfg",
+    )
     manager = _FlagManager(storage)
 
     manager.enabled = True
