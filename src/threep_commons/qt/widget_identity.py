@@ -3,8 +3,15 @@
 from __future__ import annotations
 
 import re
+from typing import Protocol
 
 _OBJECT_NAME_RE = re.compile(r"[^A-Za-z0-9_]+")
+
+
+class _QtIdentityWidget(Protocol):
+    def setObjectName(self, name: str, /) -> None: ...  # noqa: N802
+
+    def setProperty(self, name: str, value: object, /) -> None: ...  # noqa: N802
 
 
 def normalize_widget_id(widget_id: str) -> str:
@@ -25,7 +32,7 @@ def object_name_for_id(widget_id: str) -> str:
 
 
 def assign_widget_identity(
-    widget: object, *, widget_id: str, widget_alias: str
+    widget: _QtIdentityWidget, *, widget_id: str, widget_alias: str
 ) -> None:
     """Assign stable identity properties to one Qt widget."""
 

@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
+import ctypes
 import os
+from ctypes import wintypes
 from pathlib import Path
 
 if os.name == "nt":
-    import ctypes
-    from ctypes import wintypes
-
     _KERNEL32 = ctypes.WinDLL("kernel32", use_last_error=True)
 
     _GET_VOLUME_PATH_NAME = _KERNEL32.GetVolumePathNameW

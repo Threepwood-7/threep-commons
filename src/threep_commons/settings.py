@@ -53,11 +53,11 @@ class QSettingsValueStore:
     @staticmethod
     def _coerce_list(value: Any, default: list[Any] | None = None) -> list[Any]:
         if value is None:
-            return list(default or [])
+            return [] if default is None else [*default]
         if isinstance(value, list):
-            return list(value)
+            return [*value]
         if isinstance(value, tuple):
-            return list(value)
+            return [*value]
         if isinstance(value, str):
             if value == "":
                 return []

@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import ctypes
 import os
 import shutil
 from contextlib import suppress
+from ctypes import wintypes
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -16,10 +18,9 @@ from .volumes import (
     list_mounted_volume_paths,
 )
 
-if os.name == "nt":
-    import ctypes
-    from ctypes import wintypes
+_DWORD_SIZE = ctypes.sizeof(wintypes.DWORD)
 
+if os.name == "nt":
     _KERNEL32 = ctypes.WinDLL("kernel32", use_last_error=True)
 
     _CREATE_FILE = _KERNEL32.CreateFileW
@@ -88,9 +89,6 @@ if os.name == "nt":
 
     _VOLUME_DISK_EXTENTS_EXTENTS_OFFSET = _VolumeDiskExtents.Extents.offset
     _DISK_EXTENT_SIZE = ctypes.sizeof(_DiskExtent)
-    _DWORD_SIZE = ctypes.sizeof(wintypes.DWORD)
-else:
-    _DWORD_SIZE = 4
 
 
 @dataclass(frozen=True, slots=True)
