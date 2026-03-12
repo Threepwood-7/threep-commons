@@ -144,7 +144,7 @@ indent-style = "space"
 docstring-code-format = true
 
 [tool.deptry]
-known_first_party = ["threep_commons"]
+known_first_party = ["threep_commons", "_common"]
 
 [tool.basedpyright]
 pythonVersion = "3.13"
