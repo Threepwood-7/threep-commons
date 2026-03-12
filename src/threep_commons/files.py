@@ -1,10 +1,7 @@
-"""Shared filename, runtime-path, and local file-opening helpers."""
+"""Shared filename and runtime-path helpers."""
 
 from __future__ import annotations
 
-import os
-import subprocess
-import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -92,22 +89,3 @@ def resolve_cache_file_path(
         instance_id=instance_id,
         data_dir_override=data_dir_override,
     )
-
-
-def open_path_in_default_app(path: str | Path) -> bool:
-    """Open one local file or directory path in the platform default application."""
-
-    text = str(path or "").strip()
-    if not text:
-        return False
-
-    try:
-        if sys.platform == "win32":
-            os.startfile(text)
-        elif sys.platform == "darwin":
-            subprocess.Popen(["open", text])
-        else:
-            subprocess.Popen(["xdg-open", text])
-        return True
-    except (AttributeError, OSError, subprocess.SubprocessError):
-        return False
