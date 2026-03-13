@@ -1,12 +1,15 @@
-_commit: v1.7.2
-_src_path: c:/prj/aidev/py/aatemplate
-author_email: mt0z1@pir0z.yxz
-author_name: MT0z
-description: Shared reusable runtime and utility library for the Threepwood PySide project family.
-github_username: Threepwood-7
-package_name: threep_commons
-project_kind: shared_lib
-project_name: threep-commons
-project_version: 0.3.0
+# Changes here will be overwritten by Copier.
+_src_path: "c:/prj/aidev/py/aatemplate"
+_commit: "v1.7.4"
+project_name: "threep-commons"
+project_kind: "shared_lib"
+package_name: "threep_commons"
+description: "Shared reusable runtime and utility library for the Threepwood PySide project family."
+author_name: "MT0z"
+author_email: "mt0z1@pir0z.yxz"
+github_username: "Threepwood-7"
+project_version: "0.3.0"
 runtime_dependencies:
-  - PySide6>=6.10.2
+
+  - "PySide6>=6.10.2"
+
