@@ -74,6 +74,14 @@ def _parse_volume_path_multi_string(raw: str) -> list[Path]:
 
 
 def get_volume_mount_point(path: str | Path) -> Path:
+    """Resolve the mount point for the volume that contains a path.
+
+    Args:
+        path: Path located on the target Windows volume.
+
+    Returns:
+        The normalized mount point for the containing volume.
+    """
     if os.name != "nt":
         raise _require_windows(str(path))
 
@@ -85,6 +93,14 @@ def get_volume_mount_point(path: str | Path) -> Path:
 
 
 def get_volume_guid_path(path: str | Path) -> str:
+    """Resolve the Windows volume GUID path for a path.
+
+    Args:
+        path: Path located on the target Windows volume.
+
+    Returns:
+        The ``\\\\?\\Volume{...}\\`` path for the containing volume.
+    """
     if os.name != "nt":
         raise _require_windows(str(path))
 
@@ -121,12 +137,25 @@ def _query_volume_path_names(volume_guid_path: str) -> str:
 
 
 def list_volume_mount_points(volume_guid_path: str) -> list[Path]:
+    """List all mount points currently assigned to one Windows volume.
+
+    Args:
+        volume_guid_path: Windows volume GUID path to query.
+
+    Returns:
+        Mounted path roots for the given volume.
+    """
     if os.name != "nt":
         raise _require_windows(volume_guid_path)
     return _parse_volume_path_multi_string(_query_volume_path_names(volume_guid_path))
 
 
 def list_mounted_volume_paths() -> list[Path]:
+    """Enumerate mounted Windows volume paths across the system.
+
+    Returns:
+        A flat list of all current mounted volume paths.
+    """
     if os.name != "nt":
         raise _require_windows("mounted volume enumeration")
 
@@ -153,6 +182,11 @@ def list_mounted_volume_paths() -> list[Path]:
 
 
 def list_logical_drive_roots() -> list[Path]:
+    """Enumerate currently mounted Windows drive-letter roots.
+
+    Returns:
+        Drive-letter root paths present in the system bitmask.
+    """
     if os.name != "nt":
         raise _require_windows("logical drive enumeration")
 

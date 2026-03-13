@@ -93,6 +93,8 @@ if os.name == "nt":
 
 @dataclass(frozen=True, slots=True)
 class WindowsStorageUsage:
+    """Snapshot of usage and identity information for one Windows storage root."""
+
     root_path: Path
     volume_identity: str
     volume_label: str
@@ -102,10 +104,26 @@ class WindowsStorageUsage:
 
 
 def is_local_windows_path(path: str) -> bool:
+    """Return whether a path is a local Windows path instead of a UNC path.
+
+    Args:
+        path: Raw path text to classify.
+
+    Returns:
+        ``True`` when the path is not a UNC share path.
+    """
     return not str(path).startswith("\\\\")
 
 
 def resolve_volume_identity(path: str | Path) -> str:
+    """Resolve a stable identity token for a storage path.
+
+    Args:
+        path: Path whose backing volume identity should be resolved.
+
+    Returns:
+        A stable volume, device, or path-derived identity string.
+    """
     normalized = str(Path(path))
     if os.name == "nt":
         try:
@@ -196,6 +214,14 @@ def _query_volume_disk_extents(volume_guid_path: str) -> bytes:
 
 
 def resolve_physical_disk_numbers(path: str | Path) -> set[int]:
+    """Resolve the physical disk numbers that back one Windows volume.
+
+    Args:
+        path: Path located on the target Windows volume.
+
+    Returns:
+        The set of physical disk numbers reported by the volume extent API.
+    """
     if os.name != "nt":
         raise OSError(
             f"Windows disk extent API is unavailable on this platform: {path}"
@@ -215,6 +241,14 @@ def resolve_physical_disk_numbers(path: str | Path) -> set[int]:
 
 
 def resolve_physical_disk_tokens(path: str | Path) -> set[str]:
+    """Resolve stable physical-disk tokens for one path.
+
+    Args:
+        path: Path located on the target filesystem.
+
+    Returns:
+        Stable disk tokens for Windows volumes or a device token elsewhere.
+    """
     if os.name == "nt":
         disks = resolve_physical_disk_numbers(path)
         if not disks:
@@ -250,6 +284,11 @@ def _volume_label_for_root(root: Path) -> str:
 
 
 def list_windows_storage_roots() -> list[Path]:
+    """Enumerate unique local Windows storage roots.
+
+    Returns:
+        Local mounted storage roots normalized to their mount points.
+    """
     if os.name != "nt":
         return []
 
@@ -282,6 +321,11 @@ def list_windows_storage_roots() -> list[Path]:
 
 
 def list_windows_storage_usage() -> list[WindowsStorageUsage]:
+    """Enumerate storage-usage snapshots for local Windows roots.
+
+    Returns:
+        Usage records for each local mounted Windows storage root.
+    """
     if os.name != "nt":
         return []
 

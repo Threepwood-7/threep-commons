@@ -1,3 +1,5 @@
+"""Cross-platform path normalization helpers with Windows-aware semantics."""
+
 from __future__ import annotations
 
 import os
@@ -14,12 +16,29 @@ WINDOWS_DEVICE_PATH_RE = re.compile(r"^[\\/]{2}[?.][\\/]")
 
 
 def coerce_path(value: Path | str) -> Path:
+    """Normalize one raw path-like value into a ``Path`` instance.
+
+    Args:
+        value: Raw string or ``Path`` value supplied by the caller.
+
+    Returns:
+        A normalized ``Path`` with user-home expansion applied.
+    """
     if isinstance(value, Path):
         return value.expanduser()
     return Path(normalize_windows_path_text(str(value))).expanduser()
 
 
 def normalize_windows_path_text(raw: str) -> str:
+    """Normalize Windows-looking path text without forcing non-path strings.
+
+    Args:
+        raw: Raw path text or command text to normalize.
+
+    Returns:
+        Normalized path text when the input looks path-like, otherwise the
+        stripped original text.
+    """
     text = str(raw or "").strip()
     if not text:
         return text
@@ -29,6 +48,14 @@ def normalize_windows_path_text(raw: str) -> str:
 
 
 def strip_windows_long_path_text(text: str) -> str:
+    """Remove Windows long-path prefixes from path text when present.
+
+    Args:
+        text: Path text that may include a ``\\\\?\\`` prefix.
+
+    Returns:
+        Display-friendly Windows path text.
+    """
     raw = normalize_windows_path_text(str(text or ""))
     if raw.startswith("\\\\?\\UNC\\"):
         return normalize_windows_path_text(f"\\\\{raw[8:]}")
@@ -38,6 +65,14 @@ def strip_windows_long_path_text(text: str) -> str:
 
 
 def display_path_text(path: Path | str) -> str:
+    """Return path text suitable for logs, UI, and stable comparisons.
+
+    Args:
+        path: Raw path value to render.
+
+    Returns:
+        A display-safe path string with Windows long-path prefixes removed.
+    """
     raw = str(path)
     if not raw:
         return raw
@@ -47,6 +82,14 @@ def display_path_text(path: Path | str) -> str:
 
 
 def path_key(path: Path | str) -> str:
+    """Build a normalized comparison key for one path.
+
+    Args:
+        path: Path value to normalize for case-insensitive comparisons.
+
+    Returns:
+        A normalized string key suitable for deduplication and lookups.
+    """
     normalized = display_path_text(coerce_path(path))
     if _is_windows() or _looks_like_windows_path(normalized):
         return normalize_windows_path_text(normalized).casefold()
@@ -54,6 +97,14 @@ def path_key(path: Path | str) -> str:
 
 
 def is_drive_root(path: Path | str) -> bool:
+    """Return whether the provided path resolves to a drive root.
+
+    Args:
+        path: Path value to inspect.
+
+    Returns:
+        ``True`` when the path is exactly a drive root, otherwise ``False``.
+    """
     candidate = coerce_path(path)
     if not candidate.drive:
         return False
@@ -61,6 +112,15 @@ def is_drive_root(path: Path | str) -> bool:
 
 
 def is_path_under_root(path: Path | str, root: Path | str) -> bool:
+    """Return whether a path is equal to or nested beneath a root path.
+
+    Args:
+        path: Candidate path to check.
+        root: Root path that should contain the candidate.
+
+    Returns:
+        ``True`` when the candidate is the root or one of its descendants.
+    """
     candidate_key = path_key(path)
     root_key = path_key(root)
     if candidate_key == root_key:
@@ -71,6 +131,14 @@ def is_path_under_root(path: Path | str, root: Path | str) -> bool:
 
 
 def display_root(path: Path | str) -> str:
+    """Return a compact display label for a root path.
+
+    Args:
+        path: Root-like path value to render.
+
+    Returns:
+        The drive letter for drive roots, otherwise normalized display text.
+    """
     candidate = coerce_path(path)
     if is_drive_root(candidate):
         return candidate.drive
@@ -78,6 +146,15 @@ def display_root(path: Path | str) -> str:
 
 
 def dedup_paths(paths: Iterable[Path | str], *, require_existing: bool) -> list[Path]:
+    """Deduplicate path values while preserving order.
+
+    Args:
+        paths: Candidate path values to normalize and deduplicate.
+        require_existing: Whether to drop values that do not exist as folders.
+
+    Returns:
+        Unique normalized paths in first-seen order.
+    """
     deduped: list[Path] = []
     seen: set[str] = set()
     for raw_path in paths:
@@ -93,6 +170,14 @@ def dedup_paths(paths: Iterable[Path | str], *, require_existing: bool) -> list[
 
 
 def is_explicit_path_text(raw: str) -> bool:
+    """Return whether raw text looks like an explicit filesystem path.
+
+    Args:
+        raw: Raw text to classify.
+
+    Returns:
+        ``True`` when the text is absolute or contains path separators.
+    """
     text = normalize_windows_path_text(str(raw or "").strip())
     if not text:
         return False
