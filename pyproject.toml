@@ -180,8 +180,6 @@ known_first_party = ["threep_commons", "_common"]
 pythonVersion = "3.13"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
-venvPath = "."
-venv = ".venv"
 include = ["src"]
 exclude = ["tests", "**/__pycache__"]
 
