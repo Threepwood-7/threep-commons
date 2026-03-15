@@ -54,3 +54,10 @@ def test_program_files_candidates_emits_standard_roots(monkeypatch) -> None:
         Path(r"C:\PF\WinMerge\WinMergeU.exe"),
         Path(r"C:\PF86\WinMerge\WinMergeU.exe"),
     ]
+
+
+def test_program_files_candidates_requires_env_roots(monkeypatch) -> None:
+    monkeypatch.setenv("ProgramFiles", "")
+    monkeypatch.setenv("ProgramFiles(x86)", "")
+
+    assert program_files_candidates(Path("WinMerge") / "WinMergeU.exe") == []

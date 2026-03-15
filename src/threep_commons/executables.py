@@ -96,11 +96,8 @@ def program_files_candidates(relative_path: str | Path) -> list[Path]:
 
 def _program_files_roots() -> list[str]:
     roots: list[str] = []
-    for env_name, fallback in (
-        ("ProgramFiles", r"C:\Program Files"),
-        ("ProgramFiles(x86)", r"C:\Program Files (x86)"),
-    ):
-        text = normalize_windows_path_text(os.environ.get(env_name, "") or fallback)
+    for env_name in ("ProgramFiles", "ProgramFiles(x86)"):
+        text = normalize_windows_path_text(os.environ.get(env_name, ""))
         if text and text not in roots:
             roots.append(text)
     return roots
