@@ -1,6 +1,6 @@
 # Changes here will be overwritten by Copier.
 _src_path: "../_py_template"
-_commit: "v1.7.4"
+_commit: "v1.7.4-3-g8ae837d"
 project_name: "threep-commons"
 project_kind: "shared_lib"
 package_name: "threep_commons"
@@ -12,3 +12,4 @@ project_version: "0.3.0"
 runtime_dependencies:
 
   - "PySide6>=6.10.2"
+
