@@ -2,5 +2,5 @@
 
 from .app_identity import AppIdentity
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __all__ = ["AppIdentity", "__version__"]

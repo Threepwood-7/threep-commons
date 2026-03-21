@@ -8,8 +8,7 @@ description: "Shared reusable runtime and utility library for the Threepwood PyS
 author_name: "MT0z"
 author_email: "mt0z1@pir0z.yxz"
 github_username: "Threepwood-7"
-project_version: "0.3.0"
+project_version: "0.3.1"
 runtime_dependencies:
 
   - "PySide6>=6.10.2"
-

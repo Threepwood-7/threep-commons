@@ -11,7 +11,6 @@ if TYPE_CHECKING:
 TEST_DEPENDENCIES = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
-
 ]
 
 PACKAGE_DEPENDENCIES = [
@@ -39,13 +38,16 @@ def _ensure_declared_dependencies(
 
     missing_dependencies: list[str] = []
     for dependency, module_name in zip(dependencies, module_names, strict=True):
-        has_module = subprocess.run(
-            [str(python_exe), "-c", f"import {module_name}"],
-            cwd=repo_root,
-            check=False,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        ).returncode == 0
+        has_module = (
+            subprocess.run(
+                [str(python_exe), "-c", f"import {module_name}"],
+                cwd=repo_root,
+                check=False,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            ).returncode
+            == 0
+        )
         if not has_module:
             missing_dependencies.append(dependency)
 
@@ -109,7 +111,6 @@ def ensure_test_dependencies(repo_root: Path) -> int:
         module_names=[
             "pytest",
             "pytest_cov",
-
         ],
         description="test",
     )
